@@ -42,6 +42,9 @@
         html, body { 
             max-width: 100vw;
             overflow-x: hidden;
+            /* [PERBAIKAN] Memastikan body mengisi seluruh tinggi layar, termasuk safe area */
+            min-height: 100vh;
+            min-height: 100dvh; /* Unit viewport dinamis untuk browser modern */
             overflow-y: hidden; /* Default terkunci */
         }
         
