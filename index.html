@@ -504,23 +504,47 @@
 
         /* KIRIM HADIAH */
         /* [PERUBAHAN BESAR] Desain ulang menjadi seperti kartu kredit premium */
+        /* [PERUBAHAN BARU] Menambahkan perspektif untuk efek 3D */
+        .gift-card-container {
+            perspective: 1000px;
+            max-width: 400px;
+            margin: 0 auto;
+            cursor: pointer;
+        }
         .gift-card {
-            /* [PERUBAHAN] Mengganti warna kartu menjadi gradien multi-warna yang lebih dinamis */
-            background: linear-gradient(135deg, #242424 0%, #1A1A1A 50%, #C0A062 100%);
-            color: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 10px 30px 5px rgba(0,0,0,0.3);
-            text-align: left;
+            /* [PERUBAHAN BARU] Properti untuk animasi flip */
             position: relative;
-            overflow: hidden;
-            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
-            max-width: 400px; /* Menyesuaikan lebar kartu */
-            margin: 0 auto; /* Menengahkan kartu */
+            width: 100%;
             aspect-ratio: 1.586 / 1; /* Rasio kartu kredit */
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 10px 30px 5px rgba(0,0,0,0.3);
+            border-radius: 15px;
+        }
+        .gift-card-container.flipped .gift-card {
+            transform: rotateY(180deg);
+        }
+        .gift-card-face {
+            position: absolute;
+            width: 100%; height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            overflow: hidden;
+            color: white;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+            padding: 20px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+        }
+        .gift-card-front {
+            background: linear-gradient(135deg, #242424 0%, #1A1A1A 50%, #C0A062 100%);
+            z-index: 2;
+        }
+        .gift-card-back {
+            background: linear-gradient(135deg, #333, #222);
+            transform: rotateY(180deg);
+            align-items: center;
         }
         .gift-card .card-chip {
             width: 50px; height: 40px; border-radius: 5px;
@@ -560,11 +584,11 @@
             top: 20px;
             right: 25px;
             max-height: 25px;
-            filter: brightness(0) invert(1);
+            filter: brightness(0) invert(1) drop-shadow(0 0 2px rgba(0,0,0,0.5));
         }
-        .gift-card-header, .gift-card-footer {
+        .gift-card-front .gift-card-header, .gift-card-front .gift-card-footer {
             position: relative;
-            z-index: 1;
+            z-index: 2;
         }
         .gift-card-footer {
             display: flex;
@@ -584,6 +608,25 @@
             transition: transform 0.2s;
         }
         .copy-button:hover { transform: scale(1.05); }
+        /* [PERUBAHAN BARU] Styling untuk bagian belakang kartu */
+        .gift-card-back .magnetic-strip {
+            width: 100%;
+            height: 50px;
+            background: #111;
+            margin-top: 20px;
+        }
+        .gift-card-back .back-content {
+            width: 100%;
+            padding: 20px;
+            text-align: right;
+        }
+        .gift-card-back .signature-strip {
+            background: #fff;
+            height: 40px;
+            width: 80%;
+            margin-top: 10px;
+            margin-left: auto;
+        }
 
         /* FOOTER */
         .creator-credit a { color: var(--color-gold); font-weight: 600; text-decoration: none; }
@@ -1012,26 +1055,34 @@
             <h2 class="hidden anim-fade-in-up">Kirim Hadiah</h2>
             <p class="hidden anim-fade-in-up" style="--delay: 0.1s; color: var(--color-text-light);">Doa restu Anda merupakan karunia yang sangat berarti. Namun jika memberi adalah ungkapan tanda kasih, Anda dapat memberi kado secara online.</p>
             <!-- [PERUBAHAN BESAR] Struktur baru untuk kartu hadiah dengan gaya Kartu Kredit -->
-            <div class="gift-card hidden anim-fade-in-up" style="--delay: 0.3s;">
-                <div class="gift-card-header">
-                    <img src="" alt="Logo Bank" class="bank-logo" id="bank-logo-img">
-                    <!-- [PERUBAHAN] Struktur baru untuk chip yang lebih detail -->
-                    <div class="card-chip">
-                        <div class="chip-line"></div>
-                        <div class="chip-line"></div>
-                        <div class="chip-line"></div>
-                        <div class="chip-line"></div>
-                        <div class="chip-main"></div>
+            <div class="gift-card-container hidden anim-fade-in-up" style="--delay: 0.3s;">
+                <div class="gift-card">
+                    <div class="gift-card-face gift-card-front">
+                        <div class="gift-card-header">
+                            <img src="" alt="Logo Bank" class="bank-logo" id="bank-logo-img">
+                            <div class="card-chip">
+                                <div class="chip-line"></div><div class="chip-line"></div><div class="chip-line"></div><div class="chip-line"></div>
+                                <div class="chip-main"></div>
+                            </div>
+                        </div>
+                        <div class="gift-card-body">
+                            <div style="text-align: center; color: rgba(255,255,255,0.7); font-size: 0.9rem;">Klik untuk melihat no rekening</div>
+                        </div>
+                        <div class="gift-card-footer">
+                            <div class="card-holder" id="account-name-front"></div>
+                        </div>
                     </div>
-                </div>
-                <div class="gift-card-body">
-                    <div class="card-number" id="account-number"></div>
-                </div>
-                <div class="gift-card-footer">
-                    <div class="card-holder" id="account-name"></div>
-                    <button class="copy-button" id="copy-account-button">
-                        <span id="copy-button-text">Salin</span>
-                    </button>
+                    <div class="gift-card-face gift-card-back">
+                        <div class="magnetic-strip"></div>
+                        <div class="back-content">
+                            <div class="card-number" id="account-number"></div>
+                            <div class="card-holder" id="account-name"></div>
+                            <button class="copy-button" id="copy-account-button">
+                                <span id="copy-button-text">Salin</span>
+                            </button>
+                        </div>
+                        <div style="flex-grow: 1;"></div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1278,6 +1329,7 @@
                 document.getElementById('bank-logo-img').src = data.gift.bankLogoUrl;
                 document.getElementById('account-number').textContent = data.gift.accountNumber.replace(/(\d{4})/g, '$1 ').trim(); // Format dengan spasi
                 document.getElementById('account-name').textContent = data.gift.accountName;
+                document.getElementById('account-name-front').textContent = data.gift.accountName; // [PERUBAHAN BARU]
                 document.getElementById('creator-credit').innerHTML = `Made with ♡ by <a href="${data.creator.instagram}" target="_blank">${data.creator.name}</a>`;
                 document.getElementById('instagram-link').href = data.creator.instagram;
                 document.getElementById('whatsapp-link').href = data.creator.whatsapp;
@@ -1292,6 +1344,11 @@
                 const bottomNav = document.querySelector('.bottom-nav-container');
 
                 openEnvelopeButton.addEventListener('click', function() {
+                    // Mencegah klik ganda
+                    this.disabled = true;
+                    this.style.cursor = 'default';
+                    this.style.opacity = '0.7';
+
                     // JavaScript sekarang menambahkan kelas 'opened' ke elemen yang benar (#envelope-container)
                     envelopeContainer.classList.add('opened');
                     music.play().catch(error => console.log("Autoplay dicegah oleh browser."));
@@ -1311,7 +1368,13 @@
                     else { music.pause(); this.classList.remove('playing'); }
                 });
 
-                document.getElementById('copy-account-button').addEventListener('click', function() {
+                // [KREASI BARU] Event listener untuk membalik kartu hadiah
+                document.querySelector('.gift-card-container').addEventListener('click', function() {
+                    this.classList.toggle('flipped');
+                });
+
+                document.getElementById('copy-account-button').addEventListener('click', function(e) {
+                    e.stopPropagation(); // Mencegah kartu berbalik saat tombol disalin
                     navigator.clipboard.writeText(invitationData.gift.accountNumber.replace(/\s/g, ''))
                     .then(() => {
                         const buttonText = document.getElementById('copy-button-text');
